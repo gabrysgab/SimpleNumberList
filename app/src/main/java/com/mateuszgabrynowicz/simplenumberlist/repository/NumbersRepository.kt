@@ -4,8 +4,6 @@ import com.mateuszgabrynowicz.simplenumberlist.common.SchedulersProvider
 import com.mateuszgabrynowicz.simplenumberlist.model.NumbersListResponse
 import io.reactivex.Single
 import javax.inject.Inject
-import java.util.Collections.emptyList
-import kotlin.collections.ArrayList
 
 
 /**
@@ -28,10 +26,8 @@ class NumbersRepository @Inject constructor(private val schedulersProvider: Sche
         return getPaginatedNumbers(list, PAGE_SIZE)
     }
 
-    private fun getPaginatedNumbers(allNumbers: List<Int>?, pageSize: Int): List<List<Int>> {
+    private fun getPaginatedNumbers(allNumbers: List<Int>, pageSize: Int): List<List<Int>> {
         var mutablePageSize = pageSize
-        if (allNumbers == null)
-            return emptyList()
         val list = ArrayList(allNumbers)
         if (mutablePageSize <= 0 || mutablePageSize > list.size)
             mutablePageSize = list.size
@@ -39,7 +35,12 @@ class NumbersRepository @Inject constructor(private val schedulersProvider: Sche
         val pages = ArrayList<List<Int>>(numberOfPages)
         var pageNumber = 0
         while (pageNumber < numberOfPages)
-            pages.add(list.subList(pageNumber.times(mutablePageSize) , Math.min((++pageNumber).times(mutablePageSize), list.size)))
+            pages.add(
+                list.subList(
+                    pageNumber.times(mutablePageSize),
+                    Math.min((++pageNumber).times(mutablePageSize), list.size)
+                )
+            )
         return pages
     }
 
