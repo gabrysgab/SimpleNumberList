@@ -17,6 +17,7 @@ class NumbersListViewModel @Inject constructor(
     private val numbersRepository: NumbersRepository,
     private val compositeDisposable: CompositeDisposable
 ) : ViewModel() {
+    var scrollPosition = 0
     private val loadedList = mutableListOf<Int>()
     private var currentPage = 0
 
@@ -25,6 +26,10 @@ class NumbersListViewModel @Inject constructor(
 
     companion object {
         const val ALL_PAGES_LOADED = -1
+    }
+
+    init {
+        loadMoreNumbers()
     }
 
     fun loadMoreNumbers() {

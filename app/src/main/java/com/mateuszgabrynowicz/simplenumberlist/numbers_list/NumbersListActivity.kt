@@ -16,7 +16,7 @@ import com.mateuszgabrynowicz.simplenumberlist.common.LoadMoreScrollListener
 import com.mateuszgabrynowicz.simplenumberlist.common.ValidationResult
 import com.mateuszgabrynowicz.simplenumberlist.common.ViewState
 import dagger.android.support.DaggerAppCompatActivity
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_numbers_list.*
 import javax.inject.Inject
 
 class NumbersListActivity : DaggerAppCompatActivity() {
@@ -30,10 +30,11 @@ class NumbersListActivity : DaggerAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_numbers_list)
 
         initializeRecyclerView()
         initializeViewModel()
+        scrollToPosition()
 
         filterFAB.setOnClickListener {
             showAddNumberDialog()
@@ -50,7 +51,6 @@ class NumbersListActivity : DaggerAppCompatActivity() {
             }
             showLoading(viewState is ViewState.Loading)
         })
-        viewModel.loadMoreNumbers()
     }
 
     private fun showLoading(isLoading: Boolean) {
@@ -114,5 +114,20 @@ class NumbersListActivity : DaggerAppCompatActivity() {
             viewModel.addNumber(number)
             dialog.dismiss()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        saveScrollPosition()
+    }
+
+    private fun scrollToPosition() {
+        val layoutManager: LinearLayoutManager = recycler_view.layoutManager as LinearLayoutManager
+        layoutManager.scrollToPosition(viewModel.scrollPosition)
+    }
+
+    private fun saveScrollPosition() {
+        val layoutManager: LinearLayoutManager = recycler_view.layoutManager as LinearLayoutManager
+        viewModel.scrollPosition = layoutManager.findFirstVisibleItemPosition()
     }
 }
