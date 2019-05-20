@@ -4,6 +4,7 @@ import com.mateuszgabrynowicz.simplenumberlist.common.DefaultSchedulersProvider
 import com.mateuszgabrynowicz.simplenumberlist.common.ISchedulersProvider
 import dagger.Module
 import dagger.Provides
+import dagger.Reusable
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -12,8 +13,10 @@ import io.reactivex.disposables.CompositeDisposable
 
 @Module
 object RxModule {
+
     @Provides
     @JvmStatic
+    @Reusable
     fun providesSchedulersProvider(schedulersProvider: DefaultSchedulersProvider): ISchedulersProvider {
         return schedulersProvider
     }
