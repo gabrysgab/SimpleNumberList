@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mateuszgabrynowicz.simplenumberlist.common.ViewState
 import com.mateuszgabrynowicz.simplenumberlist.model.NumbersListResponse
-import com.mateuszgabrynowicz.simplenumberlist.repository.NumbersRepository
+import com.mateuszgabrynowicz.simplenumberlist.repository.INumbersRepository
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
@@ -14,7 +14,7 @@ import javax.inject.Inject
  */
 
 class NumbersListViewModel @Inject constructor(
-    private val numbersRepository: NumbersRepository,
+    private val numbersRepository: INumbersRepository,
     private val compositeDisposable: CompositeDisposable
 ) : ViewModel() {
     var scrollPosition = 0
@@ -25,17 +25,18 @@ class NumbersListViewModel @Inject constructor(
     val numberListLiveData: LiveData<ViewState<List<Int>>> = numberListMutableLiveData
 
     companion object {
-        const val ALL_PAGES_LOADED = -1
+        private const val ALL_PAGES_LOADED = -1
     }
 
-    init {
+    fun initialLoad() {
+        if (currentPage != 0) return
         loadMoreNumbers()
     }
 
     fun loadMoreNumbers() {
         if (currentPage == ALL_PAGES_LOADED) return
         numberListMutableLiveData.value = ViewState.Loading()
-        compositeDisposable.addAll(
+        compositeDisposable.add(
             numbersRepository.loadMoreNumbers(currentPage)
                 .subscribe({ numbersListResponse ->
                     onSuccessResponse(numbersListResponse)

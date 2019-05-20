@@ -36,7 +36,7 @@ class NumbersListActivity : DaggerAppCompatActivity() {
         initializeViewModel()
         scrollToPosition()
 
-        filterFAB.setOnClickListener {
+        add_number_fab.setOnClickListener {
             showAddNumberDialog()
         }
     }
@@ -51,6 +51,7 @@ class NumbersListActivity : DaggerAppCompatActivity() {
             }
             showLoading(viewState is ViewState.Loading)
         })
+        viewModel.initialLoad()
     }
 
     private fun showLoading(isLoading: Boolean) {
