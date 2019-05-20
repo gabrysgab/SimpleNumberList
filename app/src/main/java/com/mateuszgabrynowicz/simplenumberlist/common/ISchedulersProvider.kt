@@ -5,7 +5,7 @@ import io.reactivex.Scheduler
 /**
  * Created by Mateusz on 19.05.2019.
  */
-interface SchedulersProvider {
+interface ISchedulersProvider {
     fun io(): Scheduler
     fun mainThread(): Scheduler
 }

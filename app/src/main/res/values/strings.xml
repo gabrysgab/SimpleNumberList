@@ -4,4 +4,8 @@
     <string name="wrong_number_error">Please specify a number between 0 and 10000</string>
     <string name="number_already_added_error">Number already added</string>
     <string name="number_to_add_hint">Number to add</string>
+    <string name="error_title">Error</string>
+    <string name="try_again_button_label">Try again</string>
+    <string name="error_message">"We experienced an error"</string>
+    <string name="no_content_message">"We cannot retrieve the data"</string>
 </resources>

@@ -25,8 +25,9 @@ class NumbersListViewModelTest {
     private val numbersRepository: INumbersRepository = mock()
     private val compositeDisposable: CompositeDisposable = mock()
     private val observer: Observer<ViewState<List<Int>>> = mock()
+    private val numbersList = listOf(2, 5, 7)
 
-    lateinit var viewModel: NumbersListViewModel
+    private lateinit var viewModel: NumbersListViewModel
 
     @Before
     fun setup() {
@@ -41,7 +42,7 @@ class NumbersListViewModelTest {
 
         viewModel.loadMoreNumbers()
 
-        observer.onChanged(ViewState.Loading())
+        verify(observer).onChanged(ViewState.Loading())
     }
 
     @Test
@@ -51,7 +52,8 @@ class NumbersListViewModelTest {
 
         viewModel.initialLoad()
 
-        observer.onChanged(ViewState.Populated(any()))
+        verify(observer).onChanged(ViewState.Loading())
+        verify(observer).onChanged(ViewState.Populated(numbersList))
     }
 
     @Test
@@ -61,17 +63,19 @@ class NumbersListViewModelTest {
 
         viewModel.loadMoreNumbers()
 
-        observer.onChanged(ViewState.Populated(any()))
+        verify(observer).onChanged(ViewState.Populated(numbersList))
     }
 
     @Test
     fun `should return empty state on empty list response`() {
-        val singleResponse = prepareSingleResponse()
+        val numberOfPages = 0
+        val repoResponse = NumbersListResponse(emptyList(), numberOfPages)
+        val singleResponse = Single.just(repoResponse)
         whenever(numbersRepository.loadMoreNumbers(any())).thenReturn(singleResponse)
 
         viewModel.loadMoreNumbers()
 
-        observer.onChanged(ViewState.Empty())
+        verify(observer).onChanged(ViewState.Empty())
     }
 
     @Test
@@ -82,7 +86,7 @@ class NumbersListViewModelTest {
 
         viewModel.loadMoreNumbers()
 
-        observer.onChanged(ViewState.Error(throwable))
+        verify(observer).onChanged(ViewState.Error(throwable))
     }
 
     @Test
@@ -161,7 +165,6 @@ class NumbersListViewModelTest {
 
     private fun prepareSingleResponse(): Single<NumbersListResponse> {
         val numberOfPages = 2
-        val numbersList = emptyList<Int>()
         val repoResponse = NumbersListResponse(numbersList, numberOfPages)
         return Single.just(repoResponse)
     }

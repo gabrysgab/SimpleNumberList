@@ -44,10 +44,10 @@ class NumbersListActivity : DaggerAppCompatActivity() {
     private fun initializeViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(NumbersListViewModel::class.java)
         viewModel.numberListLiveData.observe(this, Observer { viewState ->
-            when(viewState) {
-                is ViewState.Populated ->  numbersAdapter?.addNumbers(viewState.data)
-                is ViewState.Empty -> showEmptyView()
-                is ViewState.Error -> showError(viewState.throwable)
+            when (viewState) {
+                is ViewState.Populated -> numbersAdapter?.addNumbers(viewState.data)
+                is ViewState.Empty,
+                is ViewState.Error -> showDialog(viewState)
             }
             showLoading(viewState is ViewState.Loading)
         })
@@ -55,15 +55,19 @@ class NumbersListActivity : DaggerAppCompatActivity() {
     }
 
     private fun showLoading(isLoading: Boolean) {
-        progress_bar.visibility = if(isLoading) View.VISIBLE else View.GONE
+        progress_bar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
-    private fun showError(throwable: Throwable) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    private fun showEmptyView() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    private fun showDialog(viewState: ViewState<List<Int>>) {
+        val errorMessage = if(viewState is ViewState.Error) R.string.error_message else R.string.no_content_message
+        AlertDialog.Builder(this)
+            .setTitle(R.string.error_title)
+            .setMessage(errorMessage)
+            .setPositiveButton(R.string.try_again_button_label) { _, _ ->
+                viewModel.loadMoreNumbers()
+            }
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .show()
     }
 
     private fun initializeRecyclerView() {
@@ -120,6 +124,7 @@ class NumbersListActivity : DaggerAppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         saveScrollPosition()
+        recycler_view.clearOnScrollListeners()
     }
 
     private fun scrollToPosition() {

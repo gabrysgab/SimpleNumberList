@@ -1,6 +1,6 @@
 package com.mateuszgabrynowicz.simplenumberlist.di
 
-import com.mateuszgabrynowicz.simplenumberlist.common.SchedulersProvider
+import com.mateuszgabrynowicz.simplenumberlist.common.ISchedulersProvider
 import com.mateuszgabrynowicz.simplenumberlist.repository.INumbersRepository
 import com.mateuszgabrynowicz.simplenumberlist.repository.NumbersRepository
 import dagger.Module
@@ -15,7 +15,7 @@ object NumbersModule {
 
     @Provides
     @JvmStatic
-    fun providesNumbersRepository(schedulersProvider: SchedulersProvider): INumbersRepository {
+    fun providesNumbersRepository(schedulersProvider: ISchedulersProvider): INumbersRepository {
         return NumbersRepository(schedulersProvider)
     }
 }

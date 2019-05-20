@@ -39,12 +39,17 @@ class NumbersListViewModel @Inject constructor(
         compositeDisposable.add(
             numbersRepository.loadMoreNumbers(currentPage)
                 .subscribe({ numbersListResponse ->
-                    onSuccessResponse(numbersListResponse)
+                    if (numbersListResponse.numbers.isEmpty()) onEmptyResponse()
+                    else onSuccessResponse(numbersListResponse)
                 },
                     { throwable ->
                         onError(throwable)
                     })
         )
+    }
+
+    private fun onEmptyResponse() {
+        numberListMutableLiveData.value = ViewState.Empty()
     }
 
     private fun onError(throwable: Throwable) {
