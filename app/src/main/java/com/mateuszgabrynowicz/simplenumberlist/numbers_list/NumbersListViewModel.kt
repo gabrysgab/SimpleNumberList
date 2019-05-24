@@ -3,6 +3,7 @@ package com.mateuszgabrynowicz.simplenumberlist.numbers_list
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.mateuszgabrynowicz.simplenumberlist.common.DialogState
 import com.mateuszgabrynowicz.simplenumberlist.common.ViewState
 import com.mateuszgabrynowicz.simplenumberlist.model.NumbersListResponse
 import com.mateuszgabrynowicz.simplenumberlist.repository.INumbersRepository
@@ -18,6 +19,8 @@ class NumbersListViewModel @Inject constructor(
     private val compositeDisposable: CompositeDisposable
 ) : ViewModel() {
     var scrollPosition = 0
+    var errorDialogState: DialogState? = null
+    var inputDialogState: DialogState? = null
     private val loadedList = mutableListOf<Int>()
     private var currentPage = 0
 
